@@ -1,0 +1,12 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+selinon = {extras = ["celery", "mongodb", "postgresql", "redis"], version = "==1.0.0rc4"}
+
+[dev-packages]
+
+[requires]
+python_version = "3.6"

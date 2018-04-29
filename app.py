@@ -1,14 +1,24 @@
 #!/usr/bin/env python3
 
-from time import sleep
+import sys
 
+from celery.bin.celery import main as celery_main
 
-def main():
-    print("Hello Selinon!")
-    while True:
-        sleep(256)
+# Act like we would invoke celery directly.
+sys.argv = [
+    '/usr/bin/celery',
+    'worker',
+    '--app=myapp.entrypoint',
+    '-l', 'INFO',
+    '--concurrency=1',
+    '-Qfoo',
+    '-P', 'solo',
+    '--prefetch-multiplier=128',
+    '-Ofair',
+    '--without-gossip',
+    '--without-mingle',
+    '--without-heartbeat',
+    '--no-color',
+]
 
-
-if __name__ == '__main__':
-    main()
-
+celery_main()
