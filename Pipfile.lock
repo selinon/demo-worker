@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "42e1f3e06ed968d3f086b6fc1a2cbfd3578119e2a007b276e7b3f81c44108660"
+            "sha256": "761ad1023b76bd2b537f9ffb9489eacbe2cc6e145699704dcde80c89500ee52c"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -22,9 +22,6 @@
                 "sha256:cba1ace9d4ff6049b190d8b7991f9c1006b443a5238021aca96dd6ad2ac9da22"
             ],
             "version": "==2.2.2"
-        },
-        "app": {
-            "git": "https://github.com/selinon/demo-app"
         },
         "billiard": {
             "hashes": [
@@ -59,9 +56,6 @@
                 "sha256:48eb22f4f8461b1df5734a074b57042430fb06e1d61bd1e11b078c0fe6d7a1f1"
             ],
             "version": "==0.3.9"
-        },
-        "demo-app": {
-            "git": "https://github.com/selinon/demo-app"
         },
         "graphviz": {
             "hashes": [
