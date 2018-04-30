@@ -1,7 +1,7 @@
 ---
   flow-definitions:
     - name: hello
-      queue: hello_v0
+      queue: hello_flow
       sampling:
         name: constant
         args:
