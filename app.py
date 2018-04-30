@@ -8,7 +8,7 @@ from celery.bin.celery import main as celery_main
 sys.argv = [
     '/usr/bin/celery',
     'worker',
-    '--app=myapp.entrypoint',
+    '--app=entrypoint',
     '-l', 'INFO',
     '--concurrency=1',
     '-Qfoo',
