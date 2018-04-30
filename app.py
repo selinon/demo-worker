@@ -14,9 +14,9 @@ _LOGGER = logging.getLogger(__name__)
 Config.set_config_yaml(*get_config_files())
 
 SELINON_DISPATCHER = bool(int(os.getenv('SELINON_DISPATCHER', '0')))
-INCLUDE_QUEUES = Config.dispatcher_queues if SELINON_DISPATCHER else Config.task_queues
+QUEUES = list(Config.dispatcher_queues.values() if SELINON_DISPATCHER else Config.task_queues.values())
 
-_LOGGER.info("Worker will listen on %r", INCLUDE_QUEUES)
+_LOGGER.info("Worker will listen on %r", QUEUES)
 
 # Act like we would invoke celery directly from command line.
 sys.argv = [
@@ -25,7 +25,7 @@ sys.argv = [
     '--app=entrypoint',
     '-l', 'INFO',
     '--concurrency=1',
-    '-Q', ','.join(INCLUDE_QUEUES),
+    '-Q', ','.join(QUEUES),
     '-P', 'solo',
     '--prefetch-multiplier=128',
     '-Ofair',
