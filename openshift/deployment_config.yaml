@@ -22,9 +22,9 @@ objects:
       service: worker
       app: selinon
       component: worker
-    name: worker
+    name: ${WORKER_NAME}
   spec:
-    replicas: 3
+    replicas: 2
     template:
       metadata:
         labels:
@@ -50,8 +50,8 @@ objects:
             limits:
               memory: "256Mi"
               cpu: "500m"
-              # TODO: readinessProbe:
-              # TODO: livenessProbe:
+          # TODO: readinessProbe:
+          # TODO: livenessProbe:
     test: false
     triggers:
     - type: ConfigChange
@@ -64,53 +64,10 @@ objects:
           kind: ImageStreamTag
           name: 'worker:latest'
 
-- apiVersion: v1
-  kind: DeploymentConfig
-  metadata:
-    labels:
-      service: worker
-      app: selinon
-      component: worker
-    name: worker-dispatcher
-  spec:
-    replicas: 2
-    template:
-      metadata:
-        labels:
-          service: worker
-      spec:
-        containers:
-        - env:
-          - name: SELINON_DISPATCHER
-            value: '1'
-          - name: BROKER_URL
-            valueFrom:
-              configMapKeyRef:
-                name: selinon
-                key: broker-url
-          - name: RESULT_BACKEND_URL
-            valueFrom:
-              configMapKeyRef:
-                name: selinon
-                key: result-backend-url
-          name: worker
-          resources:
-            requests:
-              memory: "128Mi"
-              cpu: "125m"
-            limits:
-              memory: "128Mi"
-              cpu: "125m"
-              # TODO: readinessProbe:
-              # TODO: livenessProbe:
-    test: false
-    triggers:
-    - type: ConfigChange
-    - type: ImageChange
-      imageChangeParams:
-        automatic: true
-        containerNames:
-          - worker
-        from:
-          kind: ImageStreamTag
-          name: 'worker:latest'
+parameters:
+- description: Name of worker.
+  displayName: Worker name.
+  required: true
+  name: WORKER_NAME
+  value: 'worker'
+
