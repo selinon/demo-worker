@@ -32,6 +32,16 @@ objects:
       spec:
         containers:
         - env:
+          - name: BROKER_URL
+            valueFrom:
+              secretKeyRef:
+                name: selinon
+                key: broker-url
+          - name: RESULT_BACKEND_URL
+            valueFrom:
+              secretKeyRef:
+                name: selinon
+                key: result-backend-url
           name: worker
           resources:
             requests:
