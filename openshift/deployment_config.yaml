@@ -34,12 +34,12 @@ objects:
         - env:
           - name: BROKER_URL
             valueFrom:
-              secretKeyRef:
+              configMapKeyRef:
                 name: selinon
                 key: broker-url
           - name: RESULT_BACKEND_URL
             valueFrom:
-              secretKeyRef:
+              configMapKeyRef:
                 name: selinon
                 key: result-backend-url
           name: worker
