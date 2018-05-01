@@ -32,6 +32,8 @@ objects:
       spec:
         containers:
         - env:
+          - name: SELINON_DISPATCHER
+            value: ${SELINON_DISPATCHER}
           - name: BROKER_URL
             valueFrom:
               configMapKeyRef:
@@ -70,4 +72,9 @@ parameters:
   required: true
   name: WORKER_NAME
   value: 'worker'
+
+- description: The given worker is Selinon dispatcher worker.
+  displayName: Selinon dispatcher worker.
+  required: true
+  name: SELINON_DISPATCHER
 
