@@ -27,8 +27,16 @@
       max_retry: 0
       storage: TravisLogsStorage
 
+    - name: travis_repo_builds_count_task
+      queue: travis_repo_builds_count_task
+      classname: TravisRepoBuildsCount
+      import: demo_worker.tasks
+      max_retry: 0
+      storage: Redis
+
   flows:
     - hello
+    - _travis_repo_builds
     - travis_repo_logs
     - travis_org_logs
     - travis_build_logs

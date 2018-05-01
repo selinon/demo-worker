@@ -19,6 +19,23 @@
 
     - name: travis_repo_logs
       queue: travis_repo_logs
+      nowait: _travis_repo_builds
+      sampling:
+        name: constant
+        args:
+          retry: 2
+      edges:
+        - from:
+          to: travis_repo_builds_count_task
+        - from: travis_repo_builds_count_task
+          to: _travis_repo_builds
+          foreach:
+            function: iter_travis_builds_count
+            import: demo_worker.foreach
+            propagate_result: true
+
+    - name: _travis_repo_builds
+      queue: travis_repo_builds
       nowait: travis_build_logs
       sampling:
         name: constant

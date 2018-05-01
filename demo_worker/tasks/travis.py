@@ -25,7 +25,7 @@ def _travis_get(url: str, **params) -> requests.models.Response:
     return response
 
 
-def _paginated_response(url: str, iter_key: str, params: dict=None) -> typing.Generator:
+def _travis_response(url: str, iter_key: str, params: dict=None, pagination: bool=True) -> typing.Generator:
     """Iterate over a paginated response, yield entries under iter_key key."""
     params = params or {}
     offset = 0
@@ -33,12 +33,10 @@ def _paginated_response(url: str, iter_key: str, params: dict=None) -> typing.Ge
         response = _travis_get(url, offset=offset, **params)
         yield from response.json()[iter_key]
 
-        if response.json()['@pagination']['is_last']:
+        if not pagination or response.json()['@pagination']['is_last']:
             break
 
         offset += 1
-
-        #break  # TODO
 
 
 class TravisActiveRepos(SelinonTask):
@@ -49,10 +47,20 @@ class TravisActiveRepos(SelinonTask):
         url = _TRAVIS_API_URL + f'/owner/{organization}/repos'
 
         repos = []
-        for repo in _paginated_response(url, 'repositories', params={'active': 'true', 'limit': 100}):
+        for repo in _travis_response(url, 'repositories', params={'active': 'true'}):
             repos.append(repo['slug'].split('/', maxsplit=1)[1])
 
         return repos
+
+
+class TravisRepoBuildsCount(SelinonTask):
+    """Retrieve number of builds for the given repo so build ids can be gathered in parallel."""
+
+    def run(self, node_args: dict) -> dict:
+        repo = url_quote("{}/{}".format(node_args['organization'], node_args['repo']))
+        url = _TRAVIS_API_URL + f'/repo/{repo}/builds'
+        response = _travis_get(url, params={'limit': 1})
+        return {'count': response.json()['@pagination']['count']}
 
 
 class TravisRepoBuilds(SelinonTask):
@@ -63,18 +71,20 @@ class TravisRepoBuilds(SelinonTask):
         repo = url_quote("{}/{}".format(node_args['organization'], node_args['repo']))
         url = _TRAVIS_API_URL + f'/repo/{repo}/builds'
 
-        for build in _paginated_response(url, 'builds', params={'limit': 100}):
-            if 'finished_at' in build and build['finished_at']:
-                # Track only the finished ones.
-                # TODO: is this check correct?
-                jobs = []
-                for job in build['jobs']:
-                    jobs.append(job['id'])
+        response = _travis_get(url, offset=node_args['offset']).json()
+        for build in response['builds']:
+            if 'finished_at' not in build or not build['finished_at']:
+                # Keep track of finished builds.
+                continue
 
-                builds.append({
-                    'build': build['id'],
-                    'jobs': jobs
-                })
+            jobs = []
+            for job in build['jobs']:
+                jobs.append(job['id'])
+
+            builds.append({
+                'build': build['id'],
+                'jobs': jobs
+            })
 
         return builds
 

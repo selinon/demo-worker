@@ -33,3 +33,18 @@ def iter_travis_builds(storage_pool: StoragePool, node_args: dict) -> list:
     except Exception as exc:
         _LOGGER.exception(str(exc))
         return []
+
+
+def iter_travis_builds_count(storage_pool: StoragePool, node_args: dict) -> list:
+    """Iterate over build counts respecting offset so build id downloads can be done in parallel."""
+    try:
+        builds_count = storage_pool.get('travis_repo_builds_count_task')['count']
+
+        new_node_args = []
+        for offset in range(builds_count):
+            new_node_args.append(dict(**node_args, offset=offset))
+
+        return new_node_args
+    except Exception as exc:
+        _LOGGER.exception(str(exc))
+        return []
