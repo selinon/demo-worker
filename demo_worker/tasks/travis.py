@@ -49,8 +49,8 @@ class TravisActiveRepos(SelinonTask):
         url = _TRAVIS_API_URL + f'/owner/{organization}/repos'
 
         repos = []
-        for repo in _paginated_response(url, 'repositories', params={'active': 'true'}):
-            repos.append(repo['slug'])
+        for repo in _paginated_response(url, 'repositories', params={'active': 'true', 'limit': 100}):
+            repos.append(repo['slug'].split('/', maxsplit=1)[1])
 
         return repos
 
@@ -60,10 +60,10 @@ class TravisRepoBuilds(SelinonTask):
 
     def run(self, node_args: dict) -> list:
         builds = []
-        repo = url_quote(node_args['repo'])
+        repo = url_quote("{}/{}".format(node_args['organization'], node_args['repo']))
         url = _TRAVIS_API_URL + f'/repo/{repo}/builds'
 
-        for build in _paginated_response(url, 'builds'):
+        for build in _paginated_response(url, 'builds', params={'limit': 100}):
             if 'finished_at' in build and build['finished_at']:
                 # Track only the finished ones.
                 # TODO: is this check correct?
@@ -85,14 +85,12 @@ class TravisLogTxt(SelinonTask):
     def run(self, node_args: dict) -> list:
         result = []
 
-        organization, repo = node_args['repo'].split('/', maxsplit=1)
-
         for job_id in node_args['jobs']:
             url = _TRAVIS_API_URL + f'/job/{job_id}/log.txt'
             response = _travis_get(url)
             result.append({
-                'organization': organization,
-                'repo': repo,
+                'organization': node_args['organization'],
+                'repo': node_args['repo'],
                 'build': node_args['build'],
                 'job': job_id,
                 'log': response.text
