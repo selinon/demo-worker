@@ -1,35 +1,37 @@
 ---
   tasks:
     - name: hello_task
+      queue: hello_task
       classname: HelloTask
       import: demo_worker.tasks
       max_retry: 0
-      queue: hello_task
 
-    - name: travis_active_repos
+    - name: travis_active_repos_task
+      queue: travis_active_repos_task
       classname: TravisActiveRepos
       import: demo_worker.tasks
       max_retry: 0
-      queue: travis_active_repos
       storage: Redis
 
-    - name: travis_repo_builds
+    - name: travis_repo_builds_task
+      queue: travis_repo_builds_task
       classname: TravisRepoBuilds
       import: demo_worker.tasks
       max_retry: 0
-      queue: travis_repo_builds
       storage: Redis
 
-    - name: travis_log_txt
+    - name: travis_log_txt_task
+      queue: travis_log_txt_task
       classname: TravisLogTxt
       import: demo_worker.tasks
       max_retry: 0
-      queue: travis_log_txt
+      storage: S3
 
   flows:
     - hello
     - travis_repo_logs
     - travis_org_logs
+    - travis_build_logs
 
   storages:
   - name: Memory
@@ -38,7 +40,6 @@
     configuration:
       echo: false
 
-  storages:
   - name: Redis
     classname: Redis
     import: selinon.storages.redis
@@ -47,6 +48,19 @@
       port: 6379
       db: 1
       charset: 'utf-8'
+
+  - name: S3
+    classname: S3
+    import: selinon.storages.s3
+    configuration:
+      bucket: 'travis'
+      aws_access_key_id: 'PCOMYKL7WQ8ZCESM0TH9'
+      aws_secret_access_key: 'aHDakH5CK/5LPM2kDnQX6BAlp9CyIOI9V3E+aU+S'
+      region_name: 'us-east-1'
+      location: 'us-east-1'
+      endpoint_url: 'http://minio:80'
+      serialize_json: true
+
 
   global:
     trace:

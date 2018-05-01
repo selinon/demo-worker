@@ -1,5 +1,6 @@
 """Interact with Travis CI API."""
 
+import os
 import typing
 from urllib.parse import quote_plus as url_quote
 
@@ -8,18 +9,19 @@ import requests
 
 
 _TRAVIS_API_URL = 'https://api.travis-ci.org'
-_TRAVIS_TOKEN = '7gNNMkG7vjctyBucABpEJg'
+_TRAVIS_CI_TOKEN = os.getenv('TRAVIS_CI_TOKEN')
 
 
 def _travis_get(url: str, **params) -> requests.models.Response:
     """Issue HTTP GET method on the given URL to Travis CI. Check for HTTP status."""
+    if _TRAVIS_CI_TOKEN is None:
+        raise ValueError("Travis CI token was not provided")
+
     response = requests.get(url, params=params, headers={
         'Travis-API-Version': '3',
-        'Authorization': f'token {_TRAVIS_TOKEN}'
+        'Authorization': f'token {_TRAVIS_CI_TOKEN}'
     })
     response.raise_for_status()
-    from pprint import pprint
-    pprint(response.json())
     return response
 
 
@@ -65,11 +67,14 @@ class TravisRepoBuilds(SelinonTask):
             if 'finished_at' in build and build['finished_at']:
                 # Track only the finished ones.
                 # TODO: is this check correct?
+                jobs = []
                 for job in build['jobs']:
-                    builds.append({
-                        'build': build['id'],
-                        'job': job['id']
-                    })
+                    jobs.append(job['id'])
+
+                builds.append({
+                    'build': build['id'],
+                    'jobs': jobs
+                })
 
         return builds
 
@@ -77,8 +82,18 @@ class TravisRepoBuilds(SelinonTask):
 class TravisLogTxt(SelinonTask):
     """Download the given log in a text form."""
 
-    def run(self, node_args: dict) -> str:
-        job_id = node_args['job_id']
-        url = _TRAVIS_API_URL + f'/job/{job_id}/log.txt'
-        response = _travis_get(url)
-        return response.text
+    def run(self, node_args: dict) -> list:
+        result = []
+
+        for job_id in node_args['jobs']:
+            url = _TRAVIS_API_URL + f'/job/{job_id}/log.txt'
+            response = _travis_get(url)
+            result.append({
+                'organization': node_args.get('organization'),
+                'repo': node_args.get('repo'),
+                'build': node_args.get('build'),
+                'job': job_id,
+                'log': response.text
+            })
+
+        return result
