@@ -25,7 +25,7 @@
       classname: TravisLogTxt
       import: demo_worker.tasks
       max_retry: 0
-      storage: S3
+      storage: TravisLogsStorage
 
   flows:
     - hello
@@ -49,9 +49,8 @@
       db: 1
       charset: 'utf-8'
 
-  - name: S3
-    classname: S3
-    import: selinon.storages.s3
+  - name: TravisLogsStorage
+    import: demo_worker.storages
     configuration:
       bucket: 'travis'
       aws_access_key_id: 'PCOMYKL7WQ8ZCESM0TH9'
@@ -60,7 +59,6 @@
       location: 'us-east-1'
       endpoint_url: 'http://minio:80'
       serialize_json: true
-
 
   global:
     trace:
