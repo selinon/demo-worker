@@ -58,7 +58,6 @@
       region_name: 'us-east-1'
       location: 'us-east-1'
       endpoint_url: 'http://minio:80'
-      serialize_json: true
 
   global:
     trace:
