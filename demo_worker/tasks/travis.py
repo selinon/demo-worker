@@ -85,13 +85,15 @@ class TravisLogTxt(SelinonTask):
     def run(self, node_args: dict) -> list:
         result = []
 
+        organization, repo = node_args['repo'].split('/', maxsplit=1)
+
         for job_id in node_args['jobs']:
             url = _TRAVIS_API_URL + f'/job/{job_id}/log.txt'
             response = _travis_get(url)
             result.append({
-                'organization': node_args.get('organization'),
-                'repo': node_args.get('repo'),
-                'build': node_args.get('build'),
+                'organization': organization,
+                'repo': repo,
+                'build': node_args['build'],
                 'job': job_id,
                 'log': response.text
             })
