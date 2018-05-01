@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 selinon = {extras = ["celery", "mongodb", "postgresql", "redis"], version = "==1.0.0rc4"}
+requests = "*"
 
 [dev-packages]
 

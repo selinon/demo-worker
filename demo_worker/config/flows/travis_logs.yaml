@@ -1,0 +1,34 @@
+---
+  flow-definitions:
+    - name: travis_org_logs
+      queue: travis_org_logs
+      sampling:
+        name: constant
+        args:
+          retry: 2
+      edges:
+        - from:
+          to: travis_active_repos
+        - from: travis_active_repos
+          to: travis_repo_logs
+          foreach:
+            function: iter_travis_repos
+            import: demo_worker.foreach
+            propagate_result: true
+
+    - name: travis_repo_logs
+      queue: travis_repo_logs
+      node_args_from_first: true
+      sampling:
+        name: constant
+        args:
+          retry: 2
+      edges:
+        - from:
+          to: travis_repo_builds
+        #- from: travis_repo_builds
+        #  to: travis_log_txt
+        #  foreach:
+        #    function: iter_travis_builds
+        #    import: demo_worker.foreach
+        #    propagate_result: true
