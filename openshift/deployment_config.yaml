@@ -36,7 +36,7 @@ objects:
             value: ${SELINON_DISPATCHER}
           - name: TRAVIS_CI_TOKEN
             valueFrom:
-              configMapKeyRef:
+              secretKeyRef:
                 name: selinon
                 key: travis-ci-token
           - name: BROKER_URL
