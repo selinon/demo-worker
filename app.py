@@ -26,7 +26,6 @@ sys.argv = [
     '--loglevel', 'INFO',
     '--concurrency=1',
     '--queues', ','.join(QUEUES),
-    '--pool', 'solo',
     '--prefetch-multiplier=128',
     '-Ofair',
     '--without-gossip',
