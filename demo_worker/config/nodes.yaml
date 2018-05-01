@@ -40,7 +40,7 @@
 
   storages:
   - name: Redis
-    classname: InMemoryStorage
+    classname: Redis
     import: selinon.storages.redis
     configuration:
       host: redis
