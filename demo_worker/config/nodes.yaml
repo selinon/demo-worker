@@ -69,5 +69,4 @@
 
   global:
     trace:
-      - logging: true
-        #- json: true
+      - json: true
