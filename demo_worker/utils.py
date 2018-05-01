@@ -8,7 +8,6 @@
 
 import os
 
-from celery import Celery
 from selinon import Config
 
 _BASE_NAME = os.path.join(os.path.dirname(os.path.relpath(__file__)), 'config')
@@ -31,6 +30,9 @@ def init(with_result_backend=False):
     :param with_result_backend: true if the application should connect to the result backend
     :return: Celery application instance
     """
+    # Avoid exception on CLI run.
+    from celery import Celery
+
     conf = {
         'broker_url': os.environ['BROKER_URL']
     }
