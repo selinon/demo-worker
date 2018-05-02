@@ -9,8 +9,8 @@
           retry: 2
       edges:
         - from:
-          to: travis_active_repos_task
-        - from: travis_active_repos_task
+          to: TravisActiveRepos
+        - from: TravisActiveRepos
           to: travis_repo_logs
           foreach:
             function: iter_travis_repos
@@ -26,8 +26,8 @@
           retry: 2
       edges:
         - from:
-          to: travis_repo_builds_count_task
-        - from: travis_repo_builds_count_task
+          to: TravisRepoBuildsCount
+        - from: TravisRepoBuildsCount
           to: _travis_repo_builds
           foreach:
             function: iter_travis_builds_count
@@ -43,8 +43,8 @@
           retry: 2
       edges:
         - from:
-          to: travis_repo_builds_task
-        - from: travis_repo_builds_task
+          to: TravisRepoBuilds
+        - from: TravisRepoBuilds
           to: travis_build_logs
           foreach:
             function: iter_travis_builds
@@ -59,4 +59,6 @@
           retry: 2
       edges:
         - from:
-          to: travis_log_txt_task
+          to: TravisLogTxt
+        #- from:
+        #  to: TravisCleaupLogs

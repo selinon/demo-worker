@@ -8,4 +8,4 @@
           retry: 2
       edges:
         - from:
-          to: hello_task
+          to: HelloTask

@@ -1,38 +1,39 @@
 ---
   tasks:
-    - name: hello_task
+    - name: HelloTask
       queue: hello_task
-      classname: HelloTask
       import: demo_worker.tasks
       max_retry: 0
 
-    - name: travis_active_repos_task
+    - name: TravisActiveRepos
       queue: travis_active_repos_task
-      classname: TravisActiveRepos
       import: demo_worker.tasks
       max_retry: 0
       storage: Redis
 
-    - name: travis_repo_builds_task
+    - name: TravisRepoBuilds
       queue: travis_repo_builds_task
-      classname: TravisRepoBuilds
       import: demo_worker.tasks
       max_retry: 0
       storage: Redis
 
-    - name: travis_log_txt_task
+    - name: TravisLogTxt
       queue: travis_log_txt_task
-      classname: TravisLogTxt
+      import: demo_worker.tasks
+      max_retry: 0
+      storage: Redis
+
+    - name: TravisRepoBuildsCount
+      queue: travis_repo_builds_count_task
+      import: demo_worker.tasks
+      max_retry: 0
+      storage: Redis
+
+    - name: TravisLogCleanup
+      queue: travis_log_cleanup
       import: demo_worker.tasks
       max_retry: 0
       storage: TravisLogsStorage
-
-    - name: travis_repo_builds_count_task
-      queue: travis_repo_builds_count_task
-      classname: TravisRepoBuildsCount
-      import: demo_worker.tasks
-      max_retry: 0
-      storage: Redis
 
   flows:
     - hello
@@ -49,7 +50,6 @@
       echo: false
 
   - name: Redis
-    classname: Redis
     import: selinon.storages.redis
     configuration:
       host: redis
@@ -70,3 +70,4 @@
   global:
     trace:
       - json: true
+    migration_dir: demo_worker/migration_dir
