@@ -109,16 +109,3 @@ class TravisLogTxt(SelinonTask):
 
         return result
 
-
-class TravisLogCleanup(SelinonTask):
-    """Clean logs from non-utf8 characters and escape sequences."""
-
-    def run(self, _):
-        build_log = self.parent_task_result('TravisLogTxt')
-
-        for job in build_log:
-            log = re.sub(u'\u001b\[.*?[@-~]', '', job['log'])
-            log = log.encode('ascii', 'ignore').decode()
-            job['log'] = log
-
-        return build_log
