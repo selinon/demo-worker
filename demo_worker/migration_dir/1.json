@@ -1,0 +1,25 @@
+{
+  "_meta": {
+    "datetime": "2018-05-04 07:11:09.181211",
+    "host": "localhost.localdomain",
+    "selinon_version": "1.0.0rc4",
+    "user": "fpokorny"
+  },
+  "migration": {
+    "hello": {
+      "tainted_edges": {},
+      "tainting_nodes": {},
+      "translation": {}
+    },
+    "travis_build_logs": {
+      "tainted_edges": {},
+      "tainting_nodes": {
+        "1": [
+          "TravisLogTxt"
+        ]
+      },
+      "translation": {}
+    }
+  },
+  "tainted_flow_strategy": "RETRY"
+}
