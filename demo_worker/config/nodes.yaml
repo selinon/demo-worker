@@ -21,13 +21,19 @@
       queue: travis_log_txt_task
       import: demo_worker.tasks
       max_retry: 0
-      storage: TravisLogsStorage
+      storage: Redis
 
     - name: TravisRepoBuildsCount
       queue: travis_repo_builds_count_task
       import: demo_worker.tasks
       max_retry: 0
       storage: Redis
+
+    - name: TravisLogCleanup
+      queue: travis_log_cleanup
+      import: demo_worker.tasks
+      max_retry: 0
+      storage: TravisLogsStorage
 
   flows:
     - hello
@@ -64,3 +70,4 @@
   global:
     trace:
       - json: true
+    migration_dir: demo_worker/migration_dir
