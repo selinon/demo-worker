@@ -4,4 +4,3 @@ from .travis import TravisActiveRepos
 from .travis import TravisLogTxt
 from .travis import TravisRepoBuilds
 from .travis import TravisRepoBuildsCount
-from .travis import TravisLogCleanup
