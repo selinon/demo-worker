@@ -21,17 +21,14 @@ _LOGGER.info("Worker will listen on %r", QUEUES)
 # Act like we would invoke celery directly from command line.
 sys.argv = [
     '/usr/bin/celery',
-    'worker',
     '--app', 'entrypoint',
+    '--no-color',
+    'worker',
     '--loglevel', 'INFO',
     '--concurrency=1',
     '--queues', ','.join(QUEUES),
     '--prefetch-multiplier=128',
     '-Ofair',
-    '--without-gossip',
-    '--without-mingle',
-    '--without-heartbeat',
-    '--no-color',
 ]
 
 celery_main()

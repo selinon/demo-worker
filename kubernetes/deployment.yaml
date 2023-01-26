@@ -1,0 +1,94 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: worker
+    app: selinon
+    component: worker
+  name: selinon-dispatcher
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: worker
+  template:
+    metadata:
+      labels:
+        service: worker
+    spec:
+      containers:
+      - env:
+        - name: SELINON_DISPATCHER
+          value: "1"
+        - name: TRAVIS_CI_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: selinon
+              key: travis-ci-token
+        - name: BROKER_URL
+          valueFrom:
+            configMapKeyRef:
+              name: selinon
+              key: broker-url
+        - name: RESULT_BACKEND_URL
+          valueFrom:
+            configMapKeyRef:
+              name: selinon
+              key: result-backend-url
+        name: worker
+        image: fridex/selinon-worker:latest
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "125m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: worker
+    app: selinon
+    component: worker
+  name: selinon-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: worker
+  template:
+    metadata:
+      labels:
+        service: worker
+    spec:
+      containers:
+        - env:
+            - name: SELINON_DISPATCHER
+              value: "0"
+            - name: TRAVIS_CI_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: selinon
+                  key: travis-ci-token
+            - name: BROKER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: selinon
+                  key: broker-url
+            - name: RESULT_BACKEND_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: selinon
+                  key: result-backend-url
+          name: worker
+          image: fridex/selinon-worker:latest
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "125m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
