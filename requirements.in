@@ -1,0 +1,2 @@
+requests
+selinon[celery,mongodb,postgresql,redis,s3,sentry]
