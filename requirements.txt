@@ -47,6 +47,8 @@ dnspython==2.3.0
     # via pymongo
 graphviz==0.20.1
     # via selinon
+greenlet==2.0.2
+    # via sqlalchemy
 idna==3.4
     # via requests
 jmespath==1.0.1
@@ -73,7 +75,7 @@ pyyaml==6.0
     # via selinon
 rainbow-logging-handler==2.2.2
     # via selinon
-redis==4.4.2
+redis==4.4.4
     # via selinon
 requests==2.28.2
     # via -r requirements.in
